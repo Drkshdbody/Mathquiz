@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Contact | Steven Jay</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0f0f1a 100%);
+            color: #ffffff;
+            min-height: 100vh;
+        }
+
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.2rem 5%;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.1);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00d4ff, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+        }
+
+        .nav-links { display: flex; list-style: none; gap: 0.5rem; }
+        .nav-links a {
+            color: #aaa;
+            text-decoration: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .nav-links a:hover { color: #00d4ff; background: rgba(0, 212, 255, 0.1); }
+        .nav-links a.active { color: #0a0a0a; background: linear-gradient(135deg, #00d4ff, #00ff88); }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 8rem 2rem 4rem;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .page-header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #00d4ff, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .page-header p { color: #888; font-size: 1.1rem; }
+
+        /* Contact Cards */
+        .contact-grid {
+            display: grid;
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .contact-card {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            padding: 1.5rem 2rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            text-decoration: none;
+            color: #fff;
+            transition: all 0.3s ease;
+        }
+
+        .contact-card:hover {
+            transform: translateX(10px);
+            border-color: rgba(0, 212, 255, 0.3);
+            background: rgba(0, 212, 255, 0.05);
+        }
+
+        .contact-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .contact-icon.instagram { background: linear-gradient(135deg, #f09433, #dc2743, #bc1888); }
+        .contact-icon.facebook { background: #1877f2; }
+        .contact-icon.discord { background: #5865f2; }
+        .contact-icon.gmail { background: #ea4335; }
+        .contact-icon.reddit { background: #ff4500; }
+
+        .contact-info h3 { font-size: 1.2rem; margin-bottom: 0.3rem; }
+        .contact-info p { color: #00d4ff; font-size: 1rem; }
+        .contact-info span { color: #666; font-size: 0.85rem; }
+
+        /* Contact Form */
+        .contact-form {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2.5rem;
+        }
+
+        .contact-form h3 {
+            color: #00d4ff;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #aaa;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #00d4ff;
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.2);
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #00d4ff, #00ff88);
+            border: none;
+            border-radius: 50px;
+            color: #0a0a0a;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.4);
+        }
+
+        .success-msg {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 15px;
+            margin-top: 1.5rem;
+        }
+
+        .success-msg.show { display: block; }
+        .success-msg i { font-size: 3rem; color: #00ff88; margin-bottom: 1rem; }
+        .success-msg h4 { color: #00ff88; margin-bottom: 0.5rem; }
+        .success-msg p { color: #888; }
+
+        footer {
+            padding: 3rem 5%;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-links { display: flex; justify-content: center; gap: 2rem; margin-bottom: 1rem; flex-wrap: wrap; }
+        .footer-links a { color: #888; text-decoration: none; }
+        .footer-links a:hover { color: #00d4ff; }
+        .copyright { color: #555; font-size: 0.9rem; }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .page-header h1 { font-size: 2rem; }
+            .contact-card { flex-direction: column; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="index.html" class="logo"><i class="fas fa-gamepad"></i> Deafcanthearya</a>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About Me</a></li>
+            <li><a href="project.html">Project</a></li>
+            <li><a href="learn.html">Learn The Code</a></li>
+            <li><a href="contact.html" class="active">Contact</a></li>
+        </ul>
+    </nav>
+
+    <main class="container">
+        <div class="page-header">
+            <h1><i class="fas fa-paper-plane"></i> Get In Touch</h1>
+            <p>Have questions? Want to connect? Reach out anytime!</p>
+        </div>
+
+        <!-- Contact Cards -->
+        <div class="contact-grid">
+            <a href="https://www.instagram.com/venjayx/" target="_blank" class="contact-card">
+                <div class="contact-icon instagram"><i class="fab fa-instagram"></i></div>
+                <div class="contact-info">
+                    <h3>Instagram</h3>
+                    <p>@onlywithven</p>
+                    <span>Follow me for updates</span>
+                </div>
+            </a>
+
+            <a href="https://www.facebook.com/profile.php?id=61575200826207" target="_blank" class="contact-card">
+                <div class="contact-icon facebook"><i class="fab fa-facebook-f"></i></div>
+                <div class="contact-info">
+                    <h3>Facebook</h3>
+                    <p>HeyJayVen</p>
+                    <span>Connect with me</span>
+                </div>
+            </a>
+
+            <a href="https://discord.com/users/drkshdbody" target="_blank" class="contact-card">
+                <div class="contact-icon discord"><i class="fab fa-discord"></i></div>
+                <div class="contact-info">
+                    <h3>Discord</h3>
+                    <p>drkshdbody</p>
+                    <span>Chat with me</span>
+                </div>
+            </a>
+
+            <a href="mailto:oralesteven2@gmail.com" class="contact-card">
+                <div class="contact-icon gmail"><i class="fas fa-envelope"></i></div>
+                <div class="contact-info">
+                    <h3>Email</h3>
+                    <p>oralesteven2@gmail.com</p>
+                    <span>Send me an email</span>
+                </div>
+            </a>
+
+            <a href="https://www.reddit.com/user/Traditional_Skin8672" target="_blank" class="contact-card">
+                <div class="contact-icon reddit"><i class="fab fa-reddit-alien"></i></div>
+                <div class="contact-info">
+                    <h3>Reddit</h3>
+                    <p>u/Traditional_Skin8672</p>
+                    <span>Check my posts</span>
+                </div>
+            </a>
+        </div>
+
+        <!-- Contact Form -->
+        <div class="contact-form">
+            <h3><i class="fas fa-envelope"></i> Send a Message</h3>
+            <form id="contactForm">
+                <div class="form-group">
+                    <label><i class="fas fa-user"></i> Your Name</label>
+                    <input type="text" placeholder="Enter your name" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-envelope"></i> Your Email</label>
+                    <input type="email" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-comment"></i> Message</label>
+                    <textarea placeholder="Write your message..." required></textarea>
+                </div>
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-paper-plane"></i> Send Message
+                </button>
+            </form>
+            <div class="success-msg" id="successMsg">
+                <i class="fas fa-check-circle"></i>
+                <h4>Message Sent!</h4>
+                <p>Thanks for reaching out. I'll get back to you soon! 🎮</p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About Me</a>
+            <a href="project.html">Project</a>
+            <a href="learn.html">Learn The Code</a>
+            <a href="contact.html">Contact</a>
+        </div>
+        <p class="copyright">© 2024 Steven Jay (Deafcanthearya)</p>
+    </footer>
+
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            document.getElementById('successMsg').classList.add('show');
+            this.reset();
+            setTimeout(() => {
+                document.getElementById('successMsg').classList.remove('show');
+            }, 5000);
+        });
+    </script>
+</body>
+</html>

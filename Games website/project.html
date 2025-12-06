@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Math Quest | Educational C++ Game</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0f0f1a 100%);
+            color: #ffffff;
+            min-height: 100vh;
+        }
+
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.2rem 5%;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.1);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00d4ff, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+        }
+
+        .nav-links { display: flex; list-style: none; gap: 0.5rem; }
+        .nav-links a {
+            color: #aaa;
+            text-decoration: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .nav-links a:hover { color: #00d4ff; background: rgba(0, 212, 255, 0.1); }
+        .nav-links a.active { color: #0a0a0a; background: linear-gradient(135deg, #00d4ff, #00ff88); }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 8rem 2rem 4rem;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .page-header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #00d4ff, #00ff88, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .page-header p { color: #888; font-size: 1.2rem; }
+
+        /* Console Preview */
+        .console-window {
+            background: #0d0d0d;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .console-header {
+            background: #1a1a1a;
+            padding: 0.8rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .console-dot { width: 12px; height: 12px; border-radius: 50%; }
+        .console-dot.red { background: #ff5f56; }
+        .console-dot.yellow { background: #ffbd2e; }
+        .console-dot.green { background: #27ca40; }
+        .console-title { margin-left: 1rem; color: #888; font-size: 0.9rem; }
+
+        .console-body {
+            padding: 1.5rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            color: #00ff00;
+            min-height: 250px;
+            overflow-x: auto;
+        }
+
+        .console-body .cyan { color: #00d4ff; }
+        .console-body .yellow { color: #ffbd2e; }
+        .console-body .green { color: #00ff00; }
+        .console-body .magenta { color: #ff00ff; }
+        .console-body .white { color: #ffffff; }
+
+        /* Download Section */
+        .download-section {
+            text-align: center;
+            padding: 2.5rem;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(0, 255, 136, 0.05));
+            border-radius: 20px;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            margin-bottom: 2rem;
+        }
+
+        .download-section h3 { font-size: 1.5rem; margin-bottom: 1rem; }
+        .download-section p { color: #888; margin-bottom: 1.5rem; }
+
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 1rem 2.5rem;
+            background: linear-gradient(135deg, #00d4ff, #00ff88);
+            color: #0a0a0a;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 40px rgba(0, 212, 255, 0.4);
+        }
+
+        .download-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(0, 212, 255, 0.6);
+        }
+
+        /* Section Card */
+        .section-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-card h3 {
+            color: #00d4ff;
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Features */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+        }
+
+        .feature-item i { color: #00d4ff; font-size: 1.3rem; }
+        .feature-item span { color: #aaa; }
+
+        /* Steps */
+        .step-item {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            align-items: flex-start;
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #00d4ff, #00ff88);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #0a0a0a;
+            flex-shrink: 0;
+        }
+
+        .step-content h4 { margin-bottom: 0.3rem; }
+        .step-content p { color: #888; }
+        .step-content code {
+            background: rgba(0, 212, 255, 0.2);
+            padding: 0.2rem 0.5rem;
+            border-radius: 5px;
+            color: #00d4ff;
+            font-family: monospace;
+        }
+
+        /* CTA */
+        .cta-box {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(255, 0, 255, 0.05);
+            border: 1px solid rgba(255, 0, 255, 0.2);
+            border-radius: 15px;
+        }
+
+        .cta-box h3 { margin-bottom: 1rem; }
+        .cta-box p { color: #888; margin-bottom: 1.5rem; }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.5rem;
+            background: transparent;
+            border: 2px solid #00d4ff;
+            color: #00d4ff;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover { background: #00d4ff; color: #0a0a0a; }
+
+        footer {
+            padding: 3rem 5%;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-links { display: flex; justify-content: center; gap: 2rem; margin-bottom: 1rem; flex-wrap: wrap; }
+        .footer-links a { color: #888; text-decoration: none; }
+        .footer-links a:hover { color: #00d4ff; }
+        .copyright { color: #555; font-size: 0.9rem; }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .page-header h1 { font-size: 2rem; }
+            .console-body { font-size: 0.7rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="index.html" class="logo"><i class="fas fa-gamepad"></i> Deafcanthearya</a>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About Me</a></li>
+            <li><a href="project.html" class="active">Project</a></li>
+            <li><a href="learn.html">Learn The Code</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+    </nav>
+
+    <main class="container">
+        <div class="page-header">
+            <h1><i class="fas fa-calculator"></i> Math Quest</h1>
+            <p>An Educational Math Game Built with C++</p>
+        </div>
+
+        <!-- Console Preview -->
+        <div class="console-window">
+            <div class="console-header">
+                <span class="console-dot red"></span>
+                <span class="console-dot yellow"></span>
+                <span class="console-dot green"></span>
+                <span class="console-title">MathQuest.exe</span>
+            </div>
+            <div class="console-body">
+<pre class="cyan">
+╔══════════════════════════════════════════════════════════╗
+║                                                          ║
+║   ███╗   ███╗ █████╗ ████████╗██╗  ██╗                   ║
+║   ████╗ ████║██╔══██╗╚══██╔══╝██║  ██║                   ║
+║   ██╔████╔██║███████║   ██║   ███████║                   ║
+║   ██║╚██╔╝██║██╔══██║   ██║   ██╔══██║                   ║
+║   ██║ ╚═╝ ██║██║  ██║   ██║   ██║  ██║                   ║
+║   ╚═╝     ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝                   ║
+║                                                          ║
+║          🎓 EDUCATIONAL MATH ADVENTURE 🎓                 ║
+╚══════════════════════════════════════════════════════════╝
+</pre>
+<span class="yellow">📚 Select Difficulty Level:</span>
+<span class="white">   [1] 🟢 Easy   - Addition & Subtraction (1-20)</span>
+<span class="white">   [2] 🟡 Medium - All Operations (1-50)</span>
+<span class="white">   [3] 🔴 Hard   - All Operations (1-100)</span>
+<span class="white">   [4] 💀 Challenge Mode!</span>
+
+<span class="green">▶ Enter choice: <span class="white">2</span></span>
+<span class="yellow">📝 Question 1 of 10</span>
+<span class="magenta">   What is 24 × 7 = ?</span>
+<span class="green">▶ Your answer: 168</span>
+<span class="green">✅ CORRECT! +20 points</span>
+            </div>
+        </div>
+
+        <!-- Download -->
+        <div class="download-section">
+            <h3><i class="fas fa-download"></i> Download & Play Now!</h3>
+            <p>Get the game instantly - compile, run, and start learning!</p>
+            <a href="MathQuest.cpp" download="MathQuest.cpp" class="download-btn">
+                <i class="fas fa-file-code"></i> Download MathQuest.cpp
+            </a>
+        </div>
+
+        <!-- Features -->
+        <div class="section-card">
+            <h3><i class="fas fa-star"></i> Game Features</h3>
+            <div class="features-grid">
+                <div class="feature-item"><i class="fas fa-graduation-cap"></i><span>Educational Math Practice</span></div>
+                <div class="feature-item"><i class="fas fa-layer-group"></i><span>4 Difficulty Levels</span></div>
+                <div class="feature-item"><i class="fas fa-trophy"></i><span>Score & Grading System</span></div>
+                <div class="feature-item"><i class="fas fa-fire"></i><span>Streak Bonuses</span></div>
+                <div class="feature-item"><i class="fas fa-palette"></i><span>Colorful Interface</span></div>
+                <div class="feature-item"><i class="fas fa-redo"></i><span>Unlimited Practice</span></div>
+            </div>
+        </div>
+
+        <!-- How to Run -->
+        <div class="section-card">
+            <h3><i class="fas fa-play-circle"></i> How to Compile & Run</h3>
+            <div class="step-item">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h4>Download the File</h4>
+                    <p>Click the download button to get <code>MathQuest.cpp</code></p>
+                </div>
+            </div>
+            <div class="step-item">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h4>Open Terminal</h4>
+                    <p>Navigate to the folder where you saved the file</p>
+                </div>
+            </div>
+            <div class="step-item">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h4>Compile</h4>
+                    <p>Run: <code>g++ MathQuest.cpp -o MathQuest</code></p>
+                </div>
+            </div>
+            <div class="step-item">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <h4>Run the Game!</h4>
+                    <p>Windows: <code>MathQuest.exe</code> | Mac/Linux: <code>./MathQuest</code></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="cta-box">
+            <h3><i class="fas fa-book-open"></i> Want to Understand the Code?</h3>
+            <p>Check out the complete code breakdown with explanations!</p>
+            <a href="learn.html" class="btn-secondary"><i class="fas fa-code"></i> Learn The Code</a>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About Me</a>
+            <a href="project.html">Project</a>
+            <a href="learn.html">Learn The Code</a>
+            <a href="contact.html">Contact</a>
+        </div>
+        <p class="copyright">© 2024 Steven Jay (Deafcanthearya)</p>
+    </footer>
+</body>
+</html>

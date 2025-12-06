@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Learn The Code | Math Quest Breakdown</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0f0f1a 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            line-height: 1.7;
+        }
+
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.1);
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00d4ff, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+        }
+
+        .nav-links { display: flex; list-style: none; gap: 0.5rem; }
+        .nav-links a {
+            color: #aaa;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        .nav-links a:hover { color: #00d4ff; background: rgba(0, 212, 255, 0.1); }
+        .nav-links a.active { color: #0a0a0a; background: linear-gradient(135deg, #00d4ff, #00ff88); }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 6rem 2rem 4rem;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(0, 255, 136, 0.05));
+            border-radius: 20px;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #00d4ff, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .page-header p { color: #888; font-size: 1.1rem; }
+
+        /* Table of Contents */
+        .toc {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .toc h3 { color: #00d4ff; margin-bottom: 1rem; }
+        .toc-list { list-style: none; }
+        .toc-list li { margin-bottom: 0.8rem; }
+        .toc-list a {
+            color: #aaa;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .toc-list a:hover { color: #00d4ff; background: rgba(0, 212, 255, 0.1); }
+        .toc-list .num {
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, #00d4ff, #00ff88);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #0a0a0a;
+            font-size: 0.85rem;
+        }
+
+        /* Section */
+        .section {
+            margin-bottom: 4rem;
+            scroll-margin-top: 80px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid rgba(0, 212, 255, 0.3);
+        }
+
+        .section-num {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #00d4ff, #00ff88);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #0a0a0a;
+        }
+
+        .section-header h2 { font-size: 1.5rem; }
+
+        .section p {
+            color: #aaa;
+            margin-bottom: 1rem;
+        }
+
+        .section ul, .section ol {
+            color: #aaa;
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .section li { margin-bottom: 0.5rem; }
+
+        /* Code Block */
+        .code-block {
+            background: #0d0d0d;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 1.5rem 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .code-header {
+            background: #1a1a2e;
+            padding: 0.7rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .code-header span { color: #888; font-size: 0.85rem; }
+        .code-header .lang { color: #00d4ff; font-weight: 600; }
+
+        .code-body {
+            padding: 1.2rem;
+            overflow-x: auto;
+        }
+
+        .code-body pre {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: #e0e0e0;
+            margin: 0;
+            white-space: pre;
+        }
+
+        /* Syntax Colors */
+        .keyword { color: #ff79c6; }
+        .type { color: #8be9fd; }
+        .string { color: #f1fa8c; }
+        .comment { color: #6272a4; font-style: italic; }
+        .function { color: #50fa7b; }
+        .number { color: #bd93f9; }
+
+        /* Explanation Box */
+        .explanation {
+            background: rgba(0, 212, 255, 0.05);
+            border-left: 4px solid #00d4ff;
+            padding: 1.2rem;
+            margin: 1rem 0;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .explanation h4 {
+            color: #00d4ff;
+            margin-bottom: 0.5rem;
+        }
+
+        .explanation p { color: #aaa; margin-bottom: 0.5rem; }
+        .explanation ul { color: #aaa; margin-left: 1.5rem; }
+
+        /* Tip Box */
+        .tip-box {
+            background: rgba(255, 189, 46, 0.1);
+            border: 1px solid rgba(255, 189, 46, 0.3);
+            border-radius: 10px;
+            padding: 1.2rem;
+            margin: 1rem 0;
+        }
+
+        .tip-box h4 { color: #ffbd2e; margin-bottom: 0.5rem; }
+        .tip-box p { color: #aaa; }
+
+        /* Concept Tags */
+        .concepts {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin: 1rem 0;
+        }
+
+        .concept-tag {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: #00ff88;
+        }
+
+        /* Summary */
+        .summary {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(0, 255, 136, 0.1));
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-top: 3rem;
+            text-align: center;
+        }
+
+        .summary h3 { margin-bottom: 1.5rem; }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .summary-item {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1rem;
+            border-radius: 10px;
+        }
+
+        .summary-item h4 {
+            color: #00d4ff;
+            font-size: 1.5rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .summary-item p { color: #888; font-size: 0.85rem; }
+
+        /* CTA */
+        .cta-section {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(0, 255, 136, 0.05);
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            border-radius: 15px;
+            margin-top: 3rem;
+        }
+
+        .cta-section h3 { margin-bottom: 1rem; }
+        .cta-section p { color: #888; margin-bottom: 1.5rem; }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #00d4ff, #00ff88);
+            color: #0a0a0a;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.4);
+        }
+
+        footer {
+            padding: 3rem 5%;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-links { display: flex; justify-content: center; gap: 2rem; margin-bottom: 1rem; flex-wrap: wrap; }
+        .footer-links a { color: #888; text-decoration: none; }
+        .footer-links a:hover { color: #00d4ff; }
+        .copyright { color: #555; font-size: 0.9rem; }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .page-header h1 { font-size: 1.8rem; }
+            .code-body pre { font-size: 0.75rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="index.html" class="logo"><i class="fas fa-gamepad"></i> Deafcanthearya</a>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About Me</a></li>
+            <li><a href="project.html">Project</a></li>
+            <li><a href="learn.html" class="active">Learn The Code</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+    </nav>
+
+    <main class="container">
+        <div class="page-header">
+            <h1><i class="fas fa-book-open"></i> Learn The Code</h1>
+            <p>Complete breakdown of the Math Quest C++ game</p>
+        </div>
+
+        <!-- Table of Contents -->
+        <div class="toc">
+            <h3><i class="fas fa-list"></i> Table of Contents</h3>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="num">1</span> Header Files & Preprocessor</a></li>
+                <li><a href="#section2"><span class="num">2</span> Global Variables & Struct</a></li>
+                <li><a href="#section3"><span class="num">3</span> Utility Functions</a></li>
+                <li><a href="#section4"><span class="num">4</span> Display Functions</a></li>
+                <li><a href="#section5"><span class="num">5</span> Game Logic Functions</a></li>
+                <li><a href="#section6"><span class="num">6</span> Main Game Loop</a></li>
+                <li><a href="#section7"><span class="num">7</span> Main Function</a></li>
+            </ul>
+        </div>
+
+        <!-- Section 1: Header Files -->
+        <div class="section" id="section1">
+            <div class="section-header">
+                <div class="section-num">1</div>
+                <h2>Header Files & Preprocessor Directives</h2>
+            </div>
+            <p>Every C++ program starts with including necessary header files. These provide pre-built functions we can use.</p>
+            
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="lang">C++</span>
+                    <span>Header Files</span>
+                </div>
+                <div class="code-body">
+<pre><span class="preprocessor">#include</span> <span class="string">&lt;iostream&gt;</span>    <span class="comment">// For input/output (cin, cout)</span>
+<span class="preprocessor">#include</span> <span class="string">&lt;cstdlib&gt;</span>     <span class="comment">// For rand(), srand()</span>
+<span class="preprocessor">#include</span> <span class="string">&lt;ctime&gt;</span>       <span class="comment">// For time() - seeding random</span>
+<span class="preprocessor">#include</span> <span class="string">&lt;string&gt;</span>      <span class="comment">// For string manipulation</span>
+<span class="preprocessor">#include</span> <span class="string">&lt;iomanip&gt;</span>     <span class="comment">// For setw(), setprecision()</span>
+<span class="preprocessor">#include</span> <span class="string">&lt;limits&gt;</span>      <span class="comment">// For numeric_limits</span>
+
+<span class="keyword">using namespace</span> std;</pre>
+                </div>
+            </div>
+
+            <div class="explanation">
+                <h4><i class="fas fa-lightbulb"></i> What Each Header Does:</h4>
+                <ul>
+                    <li><strong>iostream</strong> - Enables console input (cin) and output (cout)</li>
+                    <li><strong>cstdlib</strong> - Provides random number functions like rand()</li>
+                    <li><strong>ctime</strong> - Used to seed random numbers with current time</li>
+                    <li><strong>string</strong> - Allows us to use text strings</li>
+                    <li><strong>iomanip</strong> - Helps format output nicely (spacing, decimals)</li>
+                    <li><strong>limits</strong> - Handles input validation to prevent errors</li>
+                </ul>
+            </div>
+
+            <div class="tip-box">
+                <h4><i class="fas fa-info-circle"></i> Why "using namespace std"?</h4>
+                <p>This line lets us write <code>cout</code> instead of <code>std::cout</code>. It saves typing but in large projects, it's better to be explicit with <code>std::</code>.</p>
+            </div>
+
+            <div class="concepts">
+                <span class="concept-tag">Preprocessor</span>
+                <span class="concept-tag">Header Files</span>
+                <span class="concept-tag">Namespace</span>
+            </div>
+        </div>
+
+        <!-- Section 2: Struct -->
+        <div class="section" id="section2">
+            <div class="section-header">
+                <div class="section-num">2</div>
+                <h2>Global Variables & Struct</h2>
+            </div>
+            <p>We use a struct to group related game data together. This is a fundamental concept in C++ for organizing data.</p>
+            
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="lang">C++</span>
+                    <span>GameStats Structure</span>
+                </div>
+                <div class="code-body">
+<pre><span class="keyword">struct</span> <span class="type">GameStats</span> {
+    <span class="type">int</span> totalQuestions;    <span class="comment">// How many questions to ask (10)</span>
+    <span class="type">int</span> correctAnswers;    <span class="comment">// Count of correct answers</span>
+    <span class="type">int</span> wrongAnswers;      <span class="comment">// Count of wrong answers</span>
+    <span class="type">int</span> totalScore;        <span class="comment">// Player's total score</span>
+    <span class="type">int</span> streak;            <span class="comment">// Current correct streak</span>
+    <span class="type">int</span> bestStreak;        <span class="comment">// Best streak achieved</span>
+    <span class="type">string</span> difficulty;     <span class="comment">// Current difficulty name</span>
+};</pre>
+                </div>
+            </div>
+
+            <div class="explanation">
+                <h4><i class="fas fa-lightbulb"></i> Why Use a Struct?</h4>
+                <p>A struct groups related variables together into one package. Instead of having 7 separate variables floating around, we have one organized container called <code>GameStats</code>.</p>
+                <p>We can create a variable like this:</p>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="lang">C++</span>
+                    <span>Creating a GameStats variable</span>
+                </div>
+                <div class="code-body">
+<pre><span class="comment">// Initialize all values at once</span>
+<span class="type">GameStats</span> stats = {<span class="number">10</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="string">"Medium"</span>};
+
+<span class="comment">// Access values using dot notation</span>
+stats.totalScore += <span class="number">20</span>;      <span class="comment">// Add 20 to score</span>
+stats.correctAnswers++;       <span class="comment">// Increment correct count</span></pre>
+                </div>
+            </div>
+
+            <div class="concepts">
+                <span class="concept-tag">Struct</span>
+                <span class="concept-tag">Data Types</span>
+                <span class="concept-tag">int</span>
+                <span class="concept-tag">string</span>
+            </div>
+        </div>
+
+        <!-- Section 3: Utility Functions -->
+        <div class="section" id="section3">
+            <div class="section-header">
+                <div class="section-num">3</div>
+                <h2>Utility Functions</h2>
+            </div>
+            <p>These are helper functions that perform common tasks throughout the program. They keep our code clean and reusable.</p>
+            
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="lang">C++</span>
+                    <span>Clear Screen Function</span>
+                </div>
+                <div class="code-body">
+<pre><span class="type">void</span> <span class="function">clearScreen</span>() {
+    <span class="comment">// Use system command to clear the console</span>
+    <span class="preprocessor">#ifdef</span> _WIN32
+        <span class="function">system</span>(<span class="string">"cls"</span>);      <span class="comment">// Windows command</span>
+    <span class="preprocessor">#else</span>
+        <span class="function">system</span>(<span class="string">"clear"</span>);    <span class="comment">// Mac/Linux command</span>
+    <span class="preprocessor">#endif</span>
+}</pre>
+                </div>
+            </div>
+
+            <div class="explanation">
+                <h4><i class="fas fa-lightbulb"></i> Cross-Platform Code</h4>
+                <p>The <code>#ifdef</code> preprocessor directive checks if we're on Windows or another system. This lets our program work on any computer!</p>
+                <ul>
+                    <li><strong>Windows</strong> uses <code>cls</code> to clear screen</li>
+                    <li><strong>Mac/Linux</strong> uses <code>clear</code> to clear screen</li>
+                </ul>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="lang">C++</span>
+                    <span>Pause Screen Function</span>
+                </div>
+                <div class="code-body">
+<pre><span class="type">void</span> <span class="function">pauseScreen</span>() {
+    cout << <span class="string">"\nPress Enter to continue..."</span>;
+    cin.<span class="function">ignore</span>(numeric_limits&lt;streamsize&gt;::<span class="function">max</span>(), <span class="string">'\n'</span>);
+    cin.<span class="function">get</span>();
+}</pre>
+                </div>
+            </div>
+
+            <div class="explanation">
+                <h4><i class="fas fa-lightbulb"></i> How pauseScreen() Works:</h4>
+                <ul>
+                    <li><strong>cin.ignore()</strong> - Clears any leftover characters in the input buffer</li>
+                    <li><strong>cin.get()</strong> - Waits for user to press Enter</li>
+                    <li>This prevents the program from rushing past important messages</li>
+                </ul>
+            </div>
+
+            <div class="concepts">
+                <span class="concept-tag">Functions</span>
+                <span class="concept-tag">void return type</span>
+                <span class="concept-tag">Preprocessor Directives</span>
+                <span class="concept-tag">Cross-Platform</span>
+            </div>
+        </div>
+
+        <!-- Section 4: Display Functions -->
+        <div class="section" id="section4">
+            <div class="section-header">
+                <div class="section-num">4</div>
+                <h2>Display Functions</h2>
+            </div>
+            <p>These functions handle all the visual output - the menus, logos, and formatted text that make the game look nice.</p>
+            
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="lang">C++</span>
+                    <span>Display Logo Function</span>
+                </div>
+                <div class="code-body">
+<pre><span class="type">void</span> <span class="function">displayLogo</span>() {
+    <span class="function">clearScreen</span>();
+    cout << <span class="string">R"(
+    ╔════════════════════════════════════════════╗
+    ║                                            ║
+    ║   ███╗   ███╗ █████╗ ████████╗██╗  ██╗     ║
+    ║   ████╗ ████║██╔══██╗╚══██╔══╝██║  ██║     ║
+    ║   ██╔████╔██║███████║   ██║   ███████║     ║
+    ║   ██║╚██╔╝██║██╔══██║   ██║   ██╔══██║     ║
+    ║   ██║ ╚═╝ ██║██║  ██║   ██║   ██║  ██║     ║
+    ║   ╚═╝     ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝     ║
+    ║                                            ║
+    ║       🎓 EDUCATIONAL MATH GAME 🎓           ║
+    ╚════════════════════════════════════════════╝
+    )"</span> << endl;
+}</pre>
+                </div>
+            </div>
+
+            <div class="explanation">
+                <h4><i class="fas fa-lightbulb"></i> Raw String Literals R"(...)"</h4>
+                <p>The <code>R"(...)"</code> syntax is a <strong>raw string literal</strong>. It lets us write multi-line text exactly as it appears, including special characters, without needing escape sequences like <code>\n</code>.</p>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="lang">C++</span>
+                    <span>Display Main Menu</span>
+                </div>
+                <div class="code-body">
+<pre><span class="type">void</span> <span class="function">displayMainMenu</span>() {
+    <span class="function">clearScreen</span>();
+    <span class="function">displayLogo</span>();
+    
+    cout << <span class="string">"\n    [1] 🎮 Start New Game"</span> << endl;
+    cout << <span class="string">"    [2] 📖 How to Play"</span> << endl;
+    cout << <span class="string">"    [3] 👤 About Developer"</span> << endl;
+    cout << <span class="string">"    [4] 🚪 Exit Game"</span> << endl;
+    cout << <span class="string">"\n    Enter choice (1-4): "</span>;
+}</pre>
+                </div>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="lang">C++</span>
+                    <span>Display Difficulty Menu</span>
+                </div>
+                <div class="code-body">
+<pre><span class="type">void</span> <span class="function">displayDifficultyMenu</span>() {
+    <span class="function">clearScreen</span>();
+    cout << <span class="string">"\n    SELECT DIFFICULTY LEVEL\n"</span>;
+    cout << <span class="string">"    ========================\n\n"</span>;
+    cout << <span class="string">"    [1] 🟢 EASY   - Addition & Subtraction (1-20)\n"</span>;
+    cout << <span class="string">"    [2] 🟡 MEDIUM - All Operations (1-50)\n"</span>;
+    cout << <span class="string">"    [3] 🔴 HARD   - All Operations (1-100)\n"</span>;
+    cout << <span class="string">"    [4] 💀 CHALLENGE - All Operations (1-200)\n\n"</span>;
+    cout << <span class="string">"    Enter difficulty (1-4): "</span>;
+}</pre>
+                </div>
+            </div>
+
+            <div class="concepts">
+                <span class="concept-tag">Functions</span>
+                <span class="concept-tag">cout</span>
+                <span class="concept-tag">Raw Strings</span>
+                <span class="concept-tag">ASCII Art</span>
+            </div>
+        </div>
+
+        <!-- Section 5: Game Logic -->
+        <div class="section" id="section5">
+            <div class="section-header">
+                <div class="section-num">5</div>
+                <h2>Game Logic Functions</h2>
+            </div>
+            <p>These are the brain of the game - they generate random numbers, create math problems, and check answers.</p>
+            
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="lang">C++</span>
+                    <span>Generate Random Number</span>
+                </div>
+                <div class="code-body">
+<pre><span class="type">int</span> <span class="function">generateNumber</span>(<span class="type">int</span> maxNum) {
+    <span class="comment">// Returns a random number from 1 to maxNum</span>
+    <span class="keyword">return</span> (<span class="function">rand</span>() % maxNum) + <span class="number">1</span>;
+}</pre>
+                </div>
+            </div>
+
+            <div class="explanation">
+                <h4><i class="fas fa-lightbulb"></i> How Random Numbers Work:</h4>
+                <ul>
+                    <li><strong>rand()</strong> - Generates a random number (0 to RAND_MAX)</li>
+                    <li><strong>% maxNum</strong> - Modulo operator limits range to 0 to (maxNum-1)</li>
+                    <li><strong>+ 1</strong> - Shifts range to 1 to maxNum</li>
+                </ul>
+                <p>Example: If maxNum = 20, we get random numbers from 1 to 20.</p>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="lang">C++</span>
+                    <span>Get Operation Based on Difficulty</span>
+                </div>
+                <div class="code-body">
+<pre><span class="type">char</span> <span class="function">getOperation</span>(<span class="type">int</span> difficulty) {
+    <span class="type">char</span> operations[] = {<span class="string">'+'</span>, <span class="string">'-'</span>, <span class="string">'*'</span>, <span class="string">'/'</span>};
+    
+    <span class="keyword">if</span> (difficulty == <span class="number">1</span>) {
+        <span class="comment">// Easy: only addition and subtraction</span>
+        <span class="keyword">return</span> operations[<span class="function">rand</span>() % <span class="number">2</span>];
+    }
+    <span class="comment">// Other levels: all four operations</span>
+    <span class="keyword">return</span> operations[<span class="function">rand</span>() % <span class="number">4</span>];
+}</pre>
+                </div>
+            </div>
+
+            <div class="explanation">
+                <h4><i class="fas fa-lightbulb"></i> Array Indexing:</h4>
+                <p>The array <code>operations[]</code> holds 4 characters. We use random index (0-3) to pick one:</p>
+                <ul>
+                    <li>Index 0 = '+' (addition)</li>
+                    <li>Index 1 = '-' (subtraction)</li>
+                    <li>Index 2 = '*' (multiplication)</li>
+                    <li>Index 3 = '/' (division)</li>
+                </ul>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="lang">C++</span>
+                    <span>Calculate the Correct Answer</span>
+                </div>
+                <div class="code-body">
+<pre><span class="type">int</span> <span class="function">calculateAnswer</span>(<span class="type">int</span> num1, <span class="type">int</span> num2, <span class="type">char</span> op) {
+    <span class="keyword">switch</span>(op) {
+        <span class="keyword">case</span> <span class="string">'+'</span>: <span class="keyword">return</span> num1 + num2;
+        <span class="keyword">case</span> <span class="string">'-'</span>: <span class="keyword">return</span> num1 - num2;
+        <span class="keyword">case</span> <span class="string">'*'</span>: <span class="keyword">return</span> num1 * num2;
+        <span class="keyword">case</span> <span class="string">'/'</span>: <span class="keyword">return</span> (num2 != <span class="number">0</span>) ? num1 / num2 : <span class="number">0</span>;
+        <span class="keyword">default</span>: <span class="keyword">return</span> <span class="number">0</span>;
+    }
+}</pre>
+                </div>
+            </div>
+
+            <div class="explanation">
+                <h4><i class="fas fa-lightbulb"></i> Switch Statement:</h4>
+                <p>The <code>switch</code> statement is like a multi-choice selector. It checks the value of <code>op</code> and runs the matching case:</p>
+                <ul>
+                    <li>Much cleaner than multiple if-else statements</li>
+                    <li>The ternary operator <code>? :</code> prevents division by zero</li>
+                </ul>
+            </div>
+
+            <div class="concepts">
+                <span class="concept-tag">Random Numbers</span>
+                <span class="concept-tag">Switch Statement</span>
+                <span class="concept-tag">Arrays</span>
+                <span class="concept-tag">Modulo Operator</span>
+                <span class="concept-tag">Ternary Operator</span>
+            </div>
+        </div>
+
+        <!-- Section 6: Main Game Loop -->
+        <div class="section" id="section6">
+            <div class="section-header">
+                <div class="section-num">6</div>
+                <h2>Main Game Loop</h2>
+            </div>
+            <p>This is where the actual gameplay happens - asking questions, getting answers, and tracking scores.</p>
+            
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="lang">C++</span>
+                    <span>The playGame() Function</span>
+                </div>
+                <div class="code-body">
+<pre><span class="type">void</span> <span class="function">playGame</span>() {
+    <span class="function">displayDifficultyMenu</span>();
+    
+    <span class="type">int</span> diffChoice;
+    cin >> diffChoice;
+    
+    <span class="comment">// Set parameters based on difficulty</span>
+    <span class="type">int</span> maxNum, pointsPerAnswer;
+    <span class="type">string</span> difficultyName;
+    
+    <span class="keyword">switch</span>(diffChoice) {
+        <span class="keyword">case</span> <span class="number">1</span>:
+            maxNum = <span class="number">20</span>;
+            pointsPerAnswer = <span class="number">10</span>;
+            difficultyName = <span class="string">"Easy"</span>;
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="number">2</span>:
+            maxNum = <span class="number">50</span>;
+            pointsPerAnswer = <span class="number">20</span>;
+            difficultyName = <span class="string">"Medium"</span>;
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="number">3</span>:
+            maxNum = <span class="number">100</span>;
+            pointsPerAnswer = <span class="number">30</span>;
+            difficultyName = <span class="string">"Hard"</span>;
+            <span class="keyword">break</span>;
+        <span class="keyword">default</span>:
+            maxNum = <span class="number">200</span>;
+            pointsPerAnswer = <span class="number">50</span>;
+            difficultyName = <span class="string">"Challenge"</span>;
+    }
+    
+    <span class="comment">// Initialize game stats</span>
+    <span class="type">GameStats</span> stats = {<span class="number">10</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, difficultyName};
+    
+    <span class="comment">// Game loop - ask 10 questions</span>
+    <span class="keyword">for</span> (<span class="type">int</span> q = <span class="number">1</span>; q <= stats.totalQuestions; q++) {
+        <span class="comment">// Generate random numbers and operation</span>
+        <span class="type">int</span> num1 = <span class="function">generateNumber</span>(maxNum);
+        <span class="type">int</span> num2 = <span class="function">generateNumber</span>(maxNum);
+        <span class="type">char</span> op = <span class="function">getOperation</span>(diffChoice);
+        
+        <span class="comment">// Calculate correct answer</span>
+        <span class="type">int</span> correctAnswer = <span class="function">calculateAnswer</span>(num1, num2, op);
+        
+        <span class="comment">// Display question and get user answer</span>
+        cout << <span class="string">"\nQuestion "</span> << q << <span class="string">": "</span>;
+        cout << num1 << <span class="string">" "</span> << op << <span class="string">" "</span> << num2 << <span class="string">" = ? "</span>;
+        
+        <span class="type">int</span> userAnswer;
+        cin >> userAnswer;
+        
+        <span class="comment">// Check if correct</span>
+        <span class="keyword">if</span> (userAnswer == correctAnswer) {
+            stats.correctAnswers++;
+            stats.streak++;
+            stats.totalScore += pointsPerAnswer;
+            
+            <span class="comment">// Streak bonus every 3 correct</span>
+            <span class="keyword">if</span> (stats.streak % <span class="number">3</span> == <span class="number">0</span>) {
+                stats.totalScore += <span class="number">5</span>;
+            }
+            
+            <span class="keyword">if</span> (stats.streak > stats.bestStreak) {
+                stats.bestStreak = stats.streak;
+            }
+            
+            cout << <span class="string">"✅ CORRECT! +"</span> << pointsPerAnswer << <span class="string">" points\n"</span>;
+        } <span class="keyword">else</span> {
+            stats.wrongAnswers++;
+            stats.streak = <span class="number">0</span>;  <span class="comment">// Reset streak</span>
+            cout << <span class="string">"❌ Wrong! Answer was: "</span> << correctAnswer << <span class="string">"\n"</span>;
+        }
+    }
+    
+    <span class="comment">// Display final results</span>
+    <span class="function">displayGameOver</span>(stats);
+}</pre>
+                </div>
+            </div>
+
+            <div class="explanation">
+                <h4><i class="fas fa-lightbulb"></i> Key Concepts in the Game Loop:</h4>
+                <ul>
+                    <li><strong>for loop</strong> - Repeats 10 times (one for each question)</li>
+                    <li><strong>Variable initialization</strong> - GameStats struct holds all game data</li>
+                    <li><strong>Conditional logic (if/else)</strong> - Checks if answer is correct</li>
+                    <li><strong>Increment operators (++)</strong> - Adds 1 to counters</li>
+                    <li><strong>Modulo (%) </strong> - Checks if streak is divisible by 3 for bonus</li>
+                </ul>
+            </div>
+
+            <div class="tip-box">
+                <h4><i class="fas fa-info-circle"></i> Streak Bonus Logic</h4>
+                <p><code>stats.streak % 3 == 0</code> checks if the streak is a multiple of 3 (3, 6, 9, etc). When true, the player gets a +5 bonus!</p>
+            </div>
+
+            <div class="concepts">
+                <span class="concept-tag">For Loop</span>
+                <span class="concept-tag">If/Else</span>
+                <span class="concept-tag">User Input</span>
+                <span class="concept-tag">Increment Operators</span>
+            </div>
+        </div>
+
+        <!-- Section 7: Main Function -->
+        <div class="section" id="section7">
+            <div class="section-header">
+                <div class="section-num">7</div>
+                <h2>Main Function - Entry Point</h2>
+            </div>
+            <p>Every C++ program starts executing from the <code>main()</code> function. This is where everything begins!</p>
+            
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="lang">C++</span>
+                    <span>The main() Function</span>
+                </div>
+                <div class="code-body">
+<pre><span class="type">int</span> <span class="function">main</span>() {
+    <span class="comment">// Seed random number generator with current time</span>
+    <span class="function">srand</span>(<span class="keyword">static_cast</span>&lt;<span class="type">unsigned int</span>&gt;(<span class="function">time</span>(<span class="number">0</span>)));
+    
+    <span class="comment">// Display welcome screen</span>
+    <span class="function">displayWelcome</span>();
+    <span class="function">pauseScreen</span>();
+    
+    <span class="comment">// Main menu loop</span>
+    <span class="type">bool</span> running = <span class="keyword">true</span>;
+    
+    <span class="keyword">while</span> (running) {
+        <span class="function">displayMainMenu</span>();
+        
+        <span class="type">int</span> choice;
+        cin >> choice;
+        
+        <span class="comment">// Handle invalid input</span>
+        <span class="keyword">if</span> (cin.<span class="function">fail</span>()) {
+            cin.<span class="function">clear</span>();
+            cin.<span class="function">ignore</span>(<span class="number">10000</span>, <span class="string">'\n'</span>);
+            choice = <span class="number">0</span>;
+        }
+        
+        <span class="keyword">switch</span>(choice) {
+            <span class="keyword">case</span> <span class="number">1</span>:
+                <span class="function">playGame</span>();
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> <span class="number">2</span>:
+                <span class="function">displayHowToPlay</span>();
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> <span class="number">3</span>:
+                <span class="function">displayAbout</span>();
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> <span class="number">4</span>:
+                running = <span class="keyword">false</span>;  <span class="comment">// Exit the loop</span>
+                cout << <span class="string">"\nThanks for playing! Goodbye! 👋\n"</span>;
+                <span class="keyword">break</span>;
+            <span class="keyword">default</span>:
+                cout << <span class="string">"\n❌ Invalid choice! Try again.\n"</span>;
+                <span class="function">pauseScreen</span>();
+        }
+    }
+    
+    <span class="keyword">return</span> <span class="number">0</span>;  <span class="comment">// Program ended successfully</span>
+}</pre>
+                </div>
+            </div>
+
+            <div class="explanation">
+                <h4><i class="fas fa-lightbulb"></i> Breaking Down main():</h4>
+                <ol>
+                    <li><strong>srand(time(0))</strong> - Seeds the random generator so we get different numbers each run</li>
+                    <li><strong>while(running)</strong> - Keeps showing the menu until user exits</li>
+                    <li><strong>cin.fail()</strong> - Checks if user entered invalid input (like letters instead of numbers)</li>
+                    <li><strong>return 0</strong> - Tells the operating system the program ended successfully</li>
+                </ol>
+            </div>
+
+            <div class="tip-box">
+                <h4><i class="fas fa-info-circle"></i> Why return 0?</h4>
+                <p>Returning 0 from main() tells the operating system "everything went well." Non-zero values indicate errors. This is a standard convention in C/C++.</p>
+            </div>
+
+            <div class="concepts">
+                <span class="concept-tag">main()</span>
+                <span class="concept-tag">While Loop</span>
+                <span class="concept-tag">Random Seeding</span>
+                <span class="concept-tag">Input Validation</span>
+                <span class="concept-tag">Return Value</span>
+            </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="summary">
+            <h3><i class="fas fa-graduation-cap"></i> C++ Concepts Used in This Game</h3>
+            <div class="summary-grid">
+                <div class="summary-item">
+                    <h4>7</h4>
+                    <p>Header Files</p>
+                </div>
+                <div class="summary-item">
+                    <h4>1</h4>
+                    <p>Struct</p>
+                </div>
+                <div class="summary-item">
+                    <h4>10+</h4>
+                    <p>Functions</p>
+                </div>
+                <div class="summary-item">
+                    <h4>3</h4>
+                    <p>Loop Types</p>
+                </div>
+                <div class="summary-item">
+                    <h4>2</h4>
+                    <p>Switch Statements</p>
+                </div>
+                <div class="summary-item">
+                    <h4>∞</h4>
+                    <p>If/Else Conditions</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="cta-section">
+            <h3><i class="fas fa-download"></i> Ready to Try It?</h3>
+            <p>Download the complete source code and run it yourself!</p>
+            <a href="MathQuest.cpp" download class="btn-primary">
+                <i class="fas fa-file-code"></i> Download MathQuest.cpp
+            </a>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About Me</a>
+            <a href="project.html">Project</a>
+            <a href="learn.html">Learn The Code</a>
+            <a href="contact.html">Contact</a>
+        </div>
+        <p class="copyright">© 2024 Steven Jay (Deafcanthearya)</p>
+    </footer>
+</body>
+</html>
