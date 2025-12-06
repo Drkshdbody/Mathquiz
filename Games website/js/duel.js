@@ -3,8 +3,9 @@
  * DUEL SYSTEM
  * Math Quest Online - Real-time Multiplayer Battles
  *  - Infinite questions
- *  - Difficulty increases as rounds go up
+ *  - Difficulty increases with rounds
  *  - 3 lives per player
+ *  - Item effects (time potion, double points, shield)
  * ══════════════════════════════════════════════════════════════
  */
 
@@ -41,6 +42,17 @@ const Duel = {
     },
 
     roomListener: null,
+
+    /* ─────────────────────────────────────────────────────
+       Small helper for DOM animations (CSS class toggle)
+       ───────────────────────────────────────────────────── */
+
+    _animate(selector, className, duration = 500) {
+        const el = typeof selector === 'string' ? document.querySelector(selector) : selector;
+        if (!el) return;
+        el.classList.add(className);
+        setTimeout(() => el.classList.remove(className), duration);
+    },
 
     /* ─────────────────────────────────────────────────────
        Lobby / Rooms
@@ -127,7 +139,6 @@ const Duel = {
             return;
         }
 
-        // Put this player in matchmaking queue
         const queueRef = DB.matchmaking().child(PLAYER_ID);
         queueRef.set({
             name: Game.state.playerName,
@@ -379,7 +390,6 @@ const Duel = {
             this.updateDuelScores();
             this.updateLivesUI();
 
-            // Opponent answered?
             const opponentAnswered = this.state.isHost ? room.guestAnswered : room.hostAnswered;
             if (opponentAnswered && !this.state.opponentAnswered) {
                 this.state.opponentAnswered = true;
@@ -387,7 +397,6 @@ const Duel = {
                     '<i class="fas fa-check"></i> Opponent answered!';
             }
 
-            // New question from host
             if (room.round > this.state.round && room.currentQuestion) {
                 this.state.round = room.round;
                 this.state.currentQuestion = room.currentQuestion;
@@ -395,7 +404,6 @@ const Duel = {
                 this.showDuelQuestion();
             }
 
-            // Game finished
             if (room.status === 'finished') {
                 this.endDuel();
             }
@@ -473,7 +481,6 @@ const Duel = {
         }
     },
 
-    // Difficulty curve by round number
     _getDifficultyForRound: function(round) {
         if (round <= 5) return 'easy';
         if (round <= 15) return 'medium';
@@ -530,6 +537,9 @@ const Duel = {
         this.updateLivesUI();
         this.startDuelTimer();
 
+        // Small shake animation for new question
+        this._animate('#duelQuestion', 'question-pop', 250);
+
         if (this.state.isBot) {
             this.scheduleBotAnswer();
         }
@@ -540,21 +550,29 @@ const Duel = {
         this.state.timeLeft = 10;
 
         const timerEl = document.getElementById('duelTimeLeft');
+        const timerWrap = document.getElementById('duelTimer');
         timerEl.textContent = this.state.timeLeft;
-        timerEl.parentElement.classList.remove('danger');
+        timerWrap.classList.remove('danger');
 
         this.state.timer = setInterval(() => {
             this.state.timeLeft--;
             timerEl.textContent = this.state.timeLeft;
 
             if (this.state.timeLeft <= 3) {
-                timerEl.parentElement.classList.add('danger');
+                timerWrap.classList.add('danger');
             }
 
             if (this.state.timeLeft <= 0) {
                 clearInterval(this.state.timer);
                 if (!this.state.answered) {
+                    // Time up – treat as wrong, lose a life
                     this.submitAnswer(true);
+
+                    // AUTO-NEXT only in offline / vs Bot
+                    if ((!DB.isConnected() || this.state.isBot) &&
+                        this.state.playerLives > 0 && this.state.opponentLives > 0) {
+                        setTimeout(() => this.nextRound(), 1200);
+                    }
                 }
             }
         }, 1000);
@@ -574,6 +592,7 @@ const Duel = {
             } else {
                 this.state.opponentLives--;
                 this.updateLivesUI();
+                this._animate('#duelOpponentLives', 'life-loss-flash', 400);
             }
 
             this.state.opponentAnswered = true;
@@ -595,7 +614,7 @@ const Duel = {
     },
 
     /* ─────────────────────────────────────────────────────
-       Items from Shop
+       Items from Shop (visual effects added)
        ───────────────────────────────────────────────────── */
 
     useItem: function(id) {
@@ -614,12 +633,21 @@ const Duel = {
             this.state.timeLeft += 5;
             document.getElementById('duelTimeLeft').textContent = this.state.timeLeft;
             Utils.notify('+5 seconds added!', 'success');
+
+            // Visual: pulse timer
+            this._animate('#duelTimer', 'potion-flash', 600);
         } else if (id === 'double_points') {
             this.state.buffDoublePoints = true;
             Utils.notify('Double points active for next correct answer!', 'success');
+
+            // Visual: glow on your score
+            this._animate('#duelPlayerScore', 'double-points-glow', 800);
         } else if (id === 'shield') {
             this.state.buffShield = true;
-            Utils.notify('Shield will protect you from losing a life once!', 'success');
+            Utils.notify('Shield will block life loss once!', 'success');
+
+            // Visual: glow around your avatar
+            this._animate('.player-avatar.you', 'shield-glow', 900);
         }
     },
 
@@ -642,6 +670,7 @@ const Duel = {
             if (this.state.buffDoublePoints) {
                 gained += 20;
                 this.state.buffDoublePoints = false;
+                this._animate('#duelPlayerScore', 'double-points-pop', 700);
             }
             this.state.playerScore += gained;
             this.state.playerCorrect++;
@@ -659,11 +688,15 @@ const Duel = {
 
             feedback.innerHTML = msg;
             feedback.className = 'feedback correct show';
+
+            // Visual: quick green flash on question
+            this._animate('#duelQuestion', 'correct-flash', 300);
         } else {
             // Wrong / timeout => life loss unless shield
             if (this.state.buffShield) {
                 this.state.buffShield = false;
                 feedback.innerHTML = `❌ Wrong, but your shield saved your life! Answer: ${this.state.currentAnswer}`;
+                this._animate('.player-avatar.you', 'shield-pop', 500);
             } else {
                 this.state.playerLives--;
                 this.state.playerStreak = 0;
@@ -672,9 +705,13 @@ const Duel = {
                 } else {
                     feedback.innerHTML = `❌ Wrong! You lost 1 life. Answer: ${this.state.currentAnswer}`;
                 }
+                this._animate('#duelPlayerLives', 'life-loss-flash', 400);
             }
 
             feedback.className = 'feedback wrong show';
+
+            // Visual: red flash on question
+            this._animate('#duelQuestion', 'wrong-flash', 300);
         }
 
         feedback.style.display = 'block';
@@ -693,12 +730,14 @@ const Duel = {
             });
         }
 
+        // Offline / bot: if lives gone, end
         if ((!DB.isConnected() || this.state.isBot) &&
             (this.state.playerLives <= 0 || this.state.opponentLives <= 0)) {
             this.endDuel();
             return;
         }
 
+        // For online: only advance when both sides are done
         if (this.state.opponentAnswered || this.state.isBot) {
             if (this.state.playerLives <= 0 || this.state.opponentLives <= 0) {
                 if (this.state.isHost || this.state.isBot || !DB.isConnected()) {
