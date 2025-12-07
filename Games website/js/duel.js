@@ -5,8 +5,8 @@
  *  - Infinite questions
  *  - Difficulty increases with rounds
  *  - 3 lives per player
+ *  - Host/Bot/offline always drive progression
  *  - Visual item effects (time potion, double points, shield)
- *  - Auto-advance on timeout (with host fallback)
  * ══════════════════════════════════════════════════════════════
  */
 
@@ -17,7 +17,7 @@ const Duel = {
         opponentName: 'Opponent',
         opponentId: null,
 
-        round: 0,               // questions asked so far
+        round: 0,
         playerScore: 0,
         opponentScore: 0,
         playerCorrect: 0,
@@ -30,7 +30,6 @@ const Duel = {
         currentQuestion: null,
         currentAnswer: null,
         answered: false,
-        opponentAnswered: false,
 
         timer: null,
         timeLeft: 10,
@@ -41,15 +40,10 @@ const Duel = {
         buffDoublePoints: false,
         buffShield: false,
 
-        advanceTimer: null,     // for next-round scheduling
-        botTimer: null          // for bot's answer scheduling
+        botTimer: null
     },
 
     roomListener: null,
-
-    /* ─────────────────────────────────────────────────────
-       Small helper for CSS-based animations
-       ───────────────────────────────────────────────────── */
 
     _animate(selector, className, duration = 500) {
         const el = typeof selector === 'string' ? document.querySelector(selector) : selector;
@@ -366,7 +360,7 @@ const Duel = {
     },
 
     /* ─────────────────────────────────────────────────────
-       Room listener
+       Room listener (guest listens for host's questions)
        ───────────────────────────────────────────────────── */
 
     listenToRoom: function(roomId) {
@@ -393,15 +387,8 @@ const Duel = {
             this.updateDuelScores();
             this.updateLivesUI();
 
-            const opponentAnswered = this.state.isHost ? room.guestAnswered : room.hostAnswered;
-            if (opponentAnswered && !this.state.opponentAnswered) {
-                this.state.opponentAnswered = true;
-                document.getElementById('opponentStatus').innerHTML =
-                    '<i class="fas fa-check"></i> Opponent answered!';
-                this.maybeScheduleNextRound();
-            }
-
-            if (room.round > this.state.round && room.currentQuestion) {
+            // Guest receives new question from host
+            if (!this.state.isHost && room.round > this.state.round && room.currentQuestion) {
                 this.state.round = room.round;
                 this.state.currentQuestion = room.currentQuestion;
                 this.state.currentAnswer = room.currentAnswer;
@@ -415,14 +402,13 @@ const Duel = {
     },
 
     /* ─────────────────────────────────────────────────────
-       Bot / offline play
+       Bot / offline
        ───────────────────────────────────────────────────── */
 
     playBot: function() {
         this.state.isBot = true;
         this.state.opponentName = this.getBotName();
         this.state.roomId = null;
-
         this.startDuel();
     },
 
@@ -445,14 +431,11 @@ const Duel = {
         this.state.playerLives = 3;
         this.state.opponentLives = 3;
         this.state.answered = false;
-        this.state.opponentAnswered = false;
         this.state.buffDoublePoints = false;
         this.state.buffShield = false;
 
         if (this.state.botTimer) clearTimeout(this.state.botTimer);
-        if (this.state.advanceTimer) clearTimeout(this.state.advanceTimer);
         this.state.botTimer = null;
-        this.state.advanceTimer = null;
 
         document.getElementById('duelPlayerName').textContent = Game.state.playerName;
         document.getElementById('duelOpponentName').textContent = this.state.opponentName;
@@ -476,6 +459,7 @@ const Duel = {
             });
         }
 
+        // Only host / bot / offline generate questions
         if (this.state.isHost || this.state.isBot || !DB.isConnected()) {
             this.nextRound();
         }
@@ -491,17 +475,12 @@ const Duel = {
     nextRound: function() {
         this.state.round++;
         this.state.answered = false;
-        this.state.opponentAnswered = false;
 
         if (this.state.playerLives <= 0 || this.state.opponentLives <= 0) {
             this.endDuel();
             return;
         }
 
-        if (this.state.advanceTimer) {
-            clearTimeout(this.state.advanceTimer);
-            this.state.advanceTimer = null;
-        }
         if (this.state.botTimer) {
             clearTimeout(this.state.botTimer);
             this.state.botTimer = null;
@@ -516,9 +495,7 @@ const Duel = {
             DB.duelRoom(this.state.roomId).update({
                 round: this.state.round,
                 currentQuestion: question,
-                currentAnswer: question.answer,
-                hostAnswered: false,
-                guestAnswered: false
+                currentAnswer: question.answer
             });
         }
 
@@ -529,7 +506,6 @@ const Duel = {
         Game.showScreen('screen-duel');
 
         this.state.answered = false;
-        this.state.opponentAnswered = false;
 
         if (!this.state.currentQuestion) return;
 
@@ -586,7 +562,6 @@ const Duel = {
             this.state.botTimer = null;
 
             if (this.state.playerLives <= 0 || this.state.opponentLives <= 0) return;
-            if (this.state.opponentAnswered) return;
 
             const isCorrect = Math.random() < 0.7;
 
@@ -598,12 +573,7 @@ const Duel = {
                 this._animate('#duelOpponentLives', 'life-loss-flash', 400);
             }
 
-            this.state.opponentAnswered = true;
-            document.getElementById('opponentStatus').innerHTML =
-                '<i class="fas fa-check"></i> Opponent answered!';
             this.updateDuelScores();
-
-            this.maybeScheduleNextRound();
         }, delay);
     },
 
@@ -637,47 +607,7 @@ const Duel = {
         }
     },
 
-    /* Auto-advance logic */
-
-    maybeScheduleNextRound: function() {
-        // If someone has no lives, schedule end
-        if (this.state.playerLives <= 0 || this.state.opponentLives <= 0) {
-            if (this.state.advanceTimer) return;
-            if (this.state.isHost || this.state.isBot || !DB.isConnected()) {
-                this.state.advanceTimer = setTimeout(() => {
-                    this.state.advanceTimer = null;
-                    this.endDuel();
-                }, 800);
-            }
-            return;
-        }
-
-        // Offline (no DB, no bot): always auto-next
-        if (!DB.isConnected() && !this.state.isBot) {
-            if (this.state.advanceTimer) return;
-            this.state.advanceTimer = setTimeout(() => {
-                this.state.advanceTimer = null;
-                this.nextRound();
-            }, 1200);
-            return;
-        }
-
-        // Online / bot: require both to be done
-        const bothAnswered = this.state.answered && this.state.opponentAnswered;
-
-        if (!bothAnswered) return;
-
-        // Only host / bot / offline driver pushes round
-        if (!(this.state.isHost || this.state.isBot || !DB.isConnected())) return;
-        if (this.state.advanceTimer) return;
-
-        this.state.advanceTimer = setTimeout(() => {
-            this.state.advanceTimer = null;
-            this.nextRound();
-        }, 1500);
-    },
-
-    /* Submit answer (host fallback added) */
+    /* Submit answer & auto-next (host/Bot/offline only) */
 
     submitAnswer: function(timeout = false) {
         if (this.state.answered) return;
@@ -740,31 +670,23 @@ const Duel = {
         if (DB.isConnected() && this.state.roomId) {
             const scoreKey = this.state.isHost ? 'hostScore' : 'guestScore';
             const livesKey = this.state.isHost ? 'hostLives' : 'guestLives';
-            const answeredKey = this.state.isHost ? 'hostAnswered' : 'guestAnswered';
 
             DB.duelRoom(this.state.roomId).update({
                 [scoreKey]: this.state.playerScore,
-                [livesKey]: this.state.playerLives,
-                [answeredKey]: true
+                [livesKey]: this.state.playerLives
             });
         }
 
-        this.maybeScheduleNextRound();
-
-        // HOST FALLBACK:
-        // If we're online, host, not bot, and opponent never answers,
-        // still move on after a short grace period.
-        if (DB.isConnected() && this.state.isHost && !this.state.isBot) {
-            if (!this.state.advanceTimer) {
-                this.state.advanceTimer = setTimeout(() => {
-                    this.state.advanceTimer = null;
-                    if (this.state.playerLives > 0 && this.state.opponentLives > 0) {
-                        this.nextRound();
-                    } else {
-                        this.endDuel();
-                    }
-                }, 4000); // 4 sec grace if opponent stays silent
-            }
+        // Only host / bot / offline actually move the round forward
+        if (this.state.isHost || this.state.isBot || !DB.isConnected()) {
+            const delay = (this.state.playerLives <= 0 || this.state.opponentLives <= 0) ? 900 : 1500;
+            setTimeout(() => {
+                if (this.state.playerLives <= 0 || this.state.opponentLives <= 0) {
+                    this.endDuel();
+                } else {
+                    this.nextRound();
+                }
+            }, delay);
         }
     },
 
@@ -800,14 +722,9 @@ const Duel = {
 
     endDuel: function() {
         clearInterval(this.state.timer);
-
         if (this.state.botTimer) {
             clearTimeout(this.state.botTimer);
             this.state.botTimer = null;
-        }
-        if (this.state.advanceTimer) {
-            clearTimeout(this.state.advanceTimer);
-            this.state.advanceTimer = null;
         }
 
         if (DB.isConnected() && this.state.roomId && this.state.isHost) {
