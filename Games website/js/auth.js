@@ -18,7 +18,7 @@ const Auth = {
         }
     },
 
-    // NOTE: This is NOT secure hashing; for real apps use proper auth.
+    // simple base64 "hash" (not secure, but ok for demo)
     hashPassword(pw) {
         return btoa(pw);
     },
