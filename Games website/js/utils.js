@@ -64,7 +64,6 @@ const Utils = {
         }
     },
 
-    // Generate a math question based on difficulty and grade
     generateQuestion(difficulty, grade) {
         let max, ops;
         const g = parseInt(grade, 10) || 8;
@@ -158,23 +157,17 @@ const Utils = {
         let grade, cssClass;
 
         if (accuracy >= 90) {
-            grade = 'A+';
-            cssClass = 'grade-a';
+            grade = 'A+'; cssClass = 'grade-a';
         } else if (accuracy >= 80) {
-            grade = 'A';
-            cssClass = 'grade-a';
+            grade = 'A'; cssClass = 'grade-a';
         } else if (accuracy >= 70) {
-            grade = 'B';
-            cssClass = 'grade-b';
+            grade = 'B'; cssClass = 'grade-b';
         } else if (accuracy >= 60) {
-            grade = 'C';
-            cssClass = 'grade-c';
+            grade = 'C'; cssClass = 'grade-c';
         } else if (accuracy >= 40) {
-            grade = 'D';
-            cssClass = 'grade-d';
+            grade = 'D'; cssClass = 'grade-d';
         } else {
-            grade = 'F';
-            cssClass = 'grade-f';
+            grade = 'F'; cssClass = 'grade-f';
         }
 
         return { grade, class: cssClass };
