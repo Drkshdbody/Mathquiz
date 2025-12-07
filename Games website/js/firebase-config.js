@@ -33,7 +33,7 @@ try {
     hideLoadingOverlay();
 } catch (error) {
     console.warn('⚠️ Firebase not configured or failed to initialize. Running in offline mode.', error);
-    console.log('To enable multiplayer & avatars, check your Firebase credentials in firebase-config.js');
+    console.log('To enable multiplayer & avatars, check firebase-config.js');
     isFirebaseConnected = false;
     hideLoadingOverlay();
 }
