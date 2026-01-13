@@ -1,10 +1,3 @@
-/*
- * ══════════════════════════════════════════════════════════════
- * FIREBASE CONFIGURATION
- * Math Quest Online - Real-time Multiplayer
- * ══════════════════════════════════════════════════════════════
- */
-
 const firebaseConfig = {
     apiKey: "AIzaSyDJTJTaLOyWmE_4MRJzqh8fNAgstgYfGv0",
     authDomain: "mathquestonline-1b0de.firebaseapp.com",
@@ -29,10 +22,11 @@ try {
     db = firebase.database();
     storage = firebase.storage();
     isFirebaseConnected = true;
-    console.log('✅ Firebase connected successfully');
+    console.log(' Firebase connected successfully');
     hideLoadingOverlay();
 } catch (error) {
-    console.warn('⚠️ Firebase not configured or failed to initialize. Running in offline mode.', error);
+    console.warn('
+                Firebase not configured or failed to initialize. Running in offline mode.', error);
     console.log('To enable multiplayer & avatars, check firebase-config.js');
     isFirebaseConnected = false;
     hideLoadingOverlay();
@@ -125,3 +119,4 @@ function getOnlinePlayers(callback) {
             callback(players.reverse());
         });
 }
+
